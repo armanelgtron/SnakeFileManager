@@ -72,6 +72,50 @@ class DirectoryView(QtWidgets.QListWidget):
 			
 			paste = menu.addAction( this.gui.actionPaste.icon(), this.gui.actionPaste.text() );
 		else:
+			if( len( selected ) == 1 ):
+				item = selected[0];
+				if( item.file_type == gio.FileType.DIRECTORY ):
+					open_ = menu.addAction( "Open" );
+				else:
+					try:
+						openWith = gio.file_new_for_uri( item.path ).query_default_handler();
+					except GLib.GError as err:
+						print(err);
+						open_ = menu.addAction( "Open" );
+						open_.setEnabled( False );
+						open_.setVisible( False );
+					else:
+						try:
+							for n in openWith.get_icon().get_names():
+								icon = QtGui.QIcon.fromTheme( n );
+								if( not icon.isNull() ):
+									break;
+						except:
+							icon = QtGui.QIcon();
+						open_ = menu.addAction( icon, "Open with \""+openWith.get_name()+"\"" );
+					
+				openMenu = menu.addMenu("Open With...");
+				def prepareOpenWith():
+					c = gio.file_new_for_uri( item.path ).query_info("standard::content-type", gio.FileQueryInfoFlags.NONE);
+					apps = gio.app_info_get_all_for_type( c.get_content_type() )
+					for a in apps:
+						icon = QtGui.QIcon();
+						try:
+							for n in a.get_icon().get_names():
+								icon = QtGui.QIcon.fromTheme( n );
+								if( not icon.isNull() ):
+									break;
+						except:
+							pass;
+						act = openMenu.addAction( icon, a.get_name() );
+						(lambda a:act.triggered.connect(lambda:a.launch_uris([ item.path ])))(a);
+					openMenu.addSeparator();
+					act = openMenu.addAction( "Another application..." );
+					openMenu.aboutToShow.disconnect(prepareOpenWith);
+				openMenu.aboutToShow.connect(prepareOpenWith);
+			
+			menu.addSeparator();
+			
 			cut = menu.addAction( this.gui.actionCut.icon(), this.gui.actionCut.text() );
 			copy = menu.addAction( this.gui.actionCopy.icon(), this.gui.actionCopy.text() );
 			
@@ -98,6 +142,14 @@ class DirectoryView(QtWidgets.QListWidget):
 				this.s.callDelete.emit( [*selected] );
 			elif( a == trash ):
 				this.s.callTrash.emit( [*selected] );
+			
+			elif( len( selected ) == 1 ):
+				if( a == open_ ):
+					item = selected[0];
+					if( item.file_type == gio.FileType.DIRECTORY ):
+						this.itemDoubleClicked.emit( item );
+					else:
+						openWith.launch_uris([ item.path ]);
 		else:
 			pass;
 	
