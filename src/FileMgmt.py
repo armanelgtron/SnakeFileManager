@@ -281,6 +281,8 @@ class FileMgmt:
 				item.file_type = type_;
 				
 				this.view.addItem(item);
+				
+				return item;
 			
 			if( a == actCopy ):
 				print("cp");
@@ -314,10 +316,10 @@ class FileMgmt:
 				print("ln");
 				action = "creating link"
 				for u in e.mimeData().urls():
-					f = gio.file_new_for_uri( u.url() );
+					#f = gio.file_new_for_uri( u.url() );
 					dest = gio.file_new_for_uri( urllib.parse.urljoin( path+"/", u.fileName() ) );
 					try:
-						dest.make_symbolic_link( f );
+						dest.make_symbolic_link( u.url() );
 					except GLib.GError as e:
 						errMsg(action, u, str(e));
 					else:
