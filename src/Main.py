@@ -67,6 +67,13 @@ class Main:
 		currTabFunc( gui.actionNewDir.triggered, lambda t:t.makeNewDir() );
 		currTabFunc( gui.actionNewFile.triggered, lambda t:t.makeNewFile() );
 		
+		def toggleShowHiddenFiles(shown):
+			for t in this.tabs:
+				for i in range(t.view.count()):
+					item = t.view.item(i);
+					item.setHidden( ( not shown ) and item.hidden_file );
+		gui.actionShowHiddenFiles.toggled.connect(toggleShowHiddenFiles);
+		
 		# finally, open the window and add it to the list
 		gui.show();
 		

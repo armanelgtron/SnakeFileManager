@@ -413,7 +413,8 @@ class FileMgmt:
 					font.setStrikeOut( item.hidden_file );
 					item.setFont(font);
 				tab.view.addItem(item);
-				item.setHidden( item.hidden_file );
+				if( not tab.gui.actionShowHiddenFiles.isChecked() ):
+					item.setHidden( item.hidden_file );
 				
 				if( t < time.time() ):
 					t = time.time()+1;
