@@ -35,6 +35,8 @@ class Main:
 		gui.urlBar = QtWidgets.QLineEdit(gui);
 		gui.toolBar.addWidget(gui.urlBar);
 		
+		gui.actionGo = gui.urlBar.addAction( QtGui.QIcon.fromTheme("go-jump"), QtWidgets.QLineEdit.TrailingPosition );
+		
 		gui.toolBar.addAction(gui.actionSearch);
 		gui.toolBar.addAction(gui.actionNewTab);
 		
@@ -61,6 +63,7 @@ class Main:
 		currTabFunc( gui.actionForward.triggered, lambda t:t.goForward() );
 		currTabFunc( gui.actionUp.triggered, lambda t:t.goUp() );
 		currTabFunc( gui.urlBar.returnPressed, lambda t:t.loadDir( gui.urlBar.text() ) );
+		currTabFunc( gui.actionGo.triggered, lambda t:t.loadDir( gui.urlBar.text() ) );
 		
 		currTabFunc( gui.actionRefresh.triggered, lambda t:t.refresh() );
 		
