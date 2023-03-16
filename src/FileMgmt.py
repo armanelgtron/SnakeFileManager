@@ -38,6 +38,10 @@ class FileMgmt:
 	def onFileEnter(this, item):
 		if( item.file_type == gio.FileType.DIRECTORY ):
 			this.loadDir( item.path );
+		else:
+			f = gio.file_new_for_uri( item.path );
+			a = f.query_default_handler();
+			a.launch_uris([f.get_uri()]);
 	
 	def onFileRename(this, txt):
 		print(txt, txt.text());
