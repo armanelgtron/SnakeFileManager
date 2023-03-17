@@ -129,7 +129,9 @@ class FileMgmt:
 		else:
 			msg = msg % (str(len(items))+" selected items");
 		
-		r = QtWidgets.QMessageBox.question(this.gui, "Are you sure?", msg);
+		r = QtWidgets.QMessageBox.warning(this.gui, " ", msg,
+			QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No
+		);
 		if( r == QtWidgets.QMessageBox.Yes ):
 			for i in items:
 				f = gio.file_new_for_uri( i.path );

@@ -59,7 +59,7 @@ class DirectoryView(QtWidgets.QListWidget):
 		this.s.filesDropped.emit(e);
 	
 	def contextMenuEvent(this, e):
-		menu = QtWidgets.QMenu();
+		menu = QtWidgets.QMenu( this.gui );
 		
 		selected = this.selectedItems();
 		
@@ -109,6 +109,9 @@ class DirectoryView(QtWidgets.QListWidget):
 							pass;
 						act = openMenu.addAction( icon, a.get_name() );
 						(lambda a:act.triggered.connect(lambda:a.launch_uris([ item.path ])))(a);
+						act.setParent( this.gui );
+						act.setToolTip( str( a.get_description() ) );
+						act.setStatusTip( str(a.get_name())+": "+str(a.get_description()) );
 					openMenu.addSeparator();
 					act = openMenu.addAction( "Another application..." );
 					openMenu.aboutToShow.disconnect(prepareOpenWith);
@@ -129,6 +132,8 @@ class DirectoryView(QtWidgets.QListWidget):
 			rename = menu.addAction( "Rename..." );
 		
 		a = menu.exec_( this.mapToGlobal( e.pos() ) );
+		
+		this.gui.statusBar().clearMessage();
 		
 		if( len( selected ) != 0 ):
 			if( a == rename ):

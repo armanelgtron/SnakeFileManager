@@ -77,6 +77,32 @@ class Main:
 					item.setHidden( ( not shown ) and item.hidden_file );
 		gui.actionShowHiddenFiles.toggled.connect(toggleShowHiddenFiles);
 		
+		class EventHandler(Qt.QObject):
+			def eventFilter(that, w, e):
+				if( w == gui and e.type() == Qt.QEvent.Close ):
+					if( gui.dirTabs.count() > 1 ):
+						r = QtWidgets.QMessageBox.question( gui, " ", 
+							"Closing this window will close all %i open tabs. Are you sure?" % (gui.dirTabs.count())
+						);
+						if( r != QtWidgets.QMessageBox.Yes ):
+							e.ignore();
+							return True;
+					
+					for t in this.tabs:
+						if( t.gui == gui ):
+							this.tabs.remove( t );
+							t.close();
+					for g in this.wins:
+						if( g == gui ):
+							this.wins.remove( g );
+					e.accept();
+					return True;
+				
+				try: return super(QtWidgets.QMainWindow, gui).eventFilter(w, e);
+				except RuntimeError: pass;
+		gui.eventHandlerCustom = EventHandler();
+		gui.installEventFilter( gui.eventHandlerCustom );
+		
 		# finally, open the window and add it to the list
 		gui.show();
 		
