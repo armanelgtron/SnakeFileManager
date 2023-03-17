@@ -131,11 +131,18 @@ class DirectoryView(QtWidgets.QListWidget):
 			
 			rename = menu.addAction( "Rename..." );
 		
+		menu.addSeparator();
+		
+		properties = menu.addAction( "Properties..." );
+		
 		a = menu.exec_( this.mapToGlobal( e.pos() ) );
 		
 		this.gui.statusBar().clearMessage();
 		
-		if( len( selected ) != 0 ):
+		if( a == properties ):
+			from src.FileProperties import filePropertiesDialog;
+			filePropertiesDialog( *selected );
+		elif( len( selected ) != 0 ):
 			if( a == rename ):
 				if( len( selected ) == 1 ):
 					item = selected[0];
