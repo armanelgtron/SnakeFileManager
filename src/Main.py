@@ -117,6 +117,7 @@ class Main:
 	def updateShortcuts(this):
 		std = "<!-- f -->";
 		med = "<!-- m -->";
+		net = "<!-- n -->";
 		t = """
 <html>
 <body>
@@ -125,6 +126,9 @@ class Main:
 <br />
 <b>Media</b> <br />
 """+med+"""
+<br />
+<b>Network</b> <br />
+"""+net+"""
 <br />
 </body>
 </html>
@@ -154,6 +158,15 @@ class Main:
 			m = v.get_mount();
 			if( m ):
 				t=add( med, m.get_root().get_uri(), m.get_name() );
+		
+		netProto = ("sftp","ftp","smb","nfs","fish","afp");
+		for v in volmon.get_mounts():
+			r = v.get_root();
+			if( r ):
+				try: netProto.index( r.get_uri_scheme() );
+				except ValueError: pass;
+				else:
+					t=add( net, r.get_uri(), v.get_name() );
 		
 		# set it in all windows
 		for gui in this.wins:
@@ -211,5 +224,5 @@ class Main:
 		
 		this.updateShortcutsTimer = Qt.QTimer();
 		this.updateShortcutsTimer.timeout.connect( this.updateShortcuts );
-		this.updateShortcutsTimer.start( int(1*60*1e3) );
+		this.updateShortcutsTimer.start( int(1*16*1e3) );
 		
