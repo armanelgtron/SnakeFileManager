@@ -389,16 +389,35 @@ class FileMgmt:
 		# no, not THAT uNk
 		unk = QtGui.QIcon.fromTheme( "unknown" );
 		
+		c = None;
+		
 		# get the list of files
 		try:
 			c = f.enumerate_children( str.join( ",", opts ), gio.FileQueryInfoFlags.NONE, None );
 		except GLib.GError as e:
 			tab.update();
-			q = QtWidgets.QErrorMessage();
-			q.setWindowTitle("Whoops");
-			q.showMessage( str(e) );
-			q.exec();
-		else:
+			uselessErr1 = "g-dbus-error-quark: The name :([1-9])\.([1-9]+) was not provided by any .service files";
+			def whoops( txt ):
+				q = QtWidgets.QErrorMessage();
+				q.setWindowTitle("Whoops");
+				q.showMessage( str(e) );
+				q.exec();
+			
+			if( re.match( uselessErr1, str( e ) ) ):
+				print("useless");
+				time.sleep(1);
+				
+				try:
+					c = f.enumerate_children( str.join( ",", opts ), gio.FileQueryInfoFlags.NONE, None );
+				except GLib.GError as e:
+					if( re.match( uselessErr1, str( e ) ) ):
+						whoops( "The following is a useless error message returned by glib:\n"+str(e) );
+					else:
+						whoops( str(e) );
+			else:
+				whoops( str(e) );
+		
+		if( c ):
 			for f in c:
 				# find a working icon from the list
 				for n in f.get_icon().get_names():
