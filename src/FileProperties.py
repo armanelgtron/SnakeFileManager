@@ -155,20 +155,20 @@ def filePropertiesDialog(*items):
 		
 		# owner permissions
 		u.ownerAccess.setCurrentIndex(
-			(   int( bool( perm & Qt.QFile.ReadOwner ) ) ) ^ 
-			( 2*int( bool( perm & Qt.QFile.WriteOwner ) ) )
+			( bool( perm & Qt.QFile.ReadOwner  )      ) |
+			( bool( perm & Qt.QFile.WriteOwner ) << 1 )
 		);
 		
 		# group permissions
 		u.groupAccess.setCurrentIndex(
-			(   int( bool( perm & Qt.QFile.ReadGroup  ) ) ) ^ 
-			( 2*int( bool( perm & Qt.QFile.WriteGroup ) ) )
+			( bool( perm & Qt.QFile.ReadGroup  )      ) |
+			( bool( perm & Qt.QFile.WriteGroup ) << 1 )
 		);
 		
 		# other users' permissions
 		u.otherAccess.setCurrentIndex(
-			(   int( bool( perm & Qt.QFile.ReadOther  ) ) ) ^ 
-			( 2*int( bool( perm & Qt.QFile.WriteOther ) ) )
+			( bool( perm & Qt.QFile.ReadOther  )      ) | 
+			( bool( perm & Qt.QFile.WriteOther ) << 1 )
 		);
 		
 		# executable
