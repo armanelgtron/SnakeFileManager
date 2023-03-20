@@ -44,6 +44,21 @@ class Main:
 		# this could also be done from Qt Designer
 		gui.dirTabs.clear();
 		
+		
+		try: QtWidgets.QDirModel;
+		except AttributeError: pass;
+		else:
+			urlCompleter = QtWidgets.QCompleter();
+			urlCompleterModel = QtWidgets.QDirModel( urlCompleter );
+			urlCompleterModel.setFilter( 
+				Qt.QDir.AllDirs | 
+				Qt.QDir.NoDotAndDotDot | 
+				Qt.QDir.Hidden |
+			0);
+			urlCompleterModel.setSorting( Qt.QDir.Reversed );
+			urlCompleter.setModel( urlCompleterModel );
+			gui.urlBar.setCompleter( urlCompleter );
+		
 		# handle signals
 		
 		# new window signal: create from current shown directory
