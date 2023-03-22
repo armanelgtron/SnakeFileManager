@@ -1,9 +1,9 @@
 from src.common import *
 
-def filePropertiesDialog(*items):
+def filePropertiesDialog( win, *items ):
 	f = Qt.QFile("gui/fileProperties.ui");
 	f.open(Qt.QFile.ReadOnly);
-	u = QtUiTools.QUiLoader().load(f);
+	u = QtUiTools.QUiLoader().load( f, win );
 	f.close();
 	
 	def recurChildren(m):
@@ -105,7 +105,7 @@ def filePropertiesDialog(*items):
 	for i in infos:
 		totalSize += i.get_size();
 	
-	sizeStr = sizeBytes = str()+" bytes";
+	sizeStr = sizeBytes = str(totalSize)+" bytes";
 	sizeName = ( "", "K", "M", "G", "T" );
 	sizeCalc1 = sizeCalc2 = totalSize; sizeIt = 0;
 	while( sizeCalc2 >= 1000 and sizeIt <= len( sizeName ) ):

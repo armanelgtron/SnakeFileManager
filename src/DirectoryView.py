@@ -141,7 +141,7 @@ class DirectoryView(QtWidgets.QListWidget):
 		
 		if( a == properties ):
 			from src.FileProperties import filePropertiesDialog;
-			filePropertiesDialog( *selected );
+			filePropertiesDialog( this.gui, *selected );
 		elif( len( selected ) != 0 ):
 			if( a == rename ):
 				if( len( selected ) == 1 ):
